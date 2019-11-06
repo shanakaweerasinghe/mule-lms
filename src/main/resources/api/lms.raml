@@ -1,0 +1,71 @@
+#%RAML 1.0
+title: Sample API
+/librarymanagement:
+  /book:
+    post:
+    get:
+      queryParameters:
+        bookName:
+          required: false
+          type: string
+          example: "Madolduwa"
+    patch:
+    delete:
+      queryParameters:
+        bookId:
+          required: true
+          type: string
+          example: "Madolduwa"
+    /all:
+      get:
+  /library:
+    post:
+    get:
+      queryParameters:
+        LibraryName:
+          required: false
+          type: string
+          example: "Nenasa"
+    patch:
+    delete:
+      queryParameters:
+        libraryId:
+          required: true
+          type: string
+          example: "0001"
+
+  /member:
+    post:
+    get:
+      queryParameters:
+        memberName:
+          required: false
+          type: string
+          example: "Shanaka"
+    patch:
+    delete:
+      queryParameters:
+        menberId:
+          required: true
+          type: string
+          example: "1020"
+
+  /librarian:
+    post:
+    get:
+      queryParameters:
+        StaffName:
+          required: false
+          type: string
+          example: "Shanaka"
+    patch:
+    delete:
+      queryParameters:
+        EmpNo:
+          required: true
+          type: string
+          example: "0001"
+    /designation:
+      get:
+      post:
+  

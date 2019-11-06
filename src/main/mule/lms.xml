@@ -1,0 +1,653 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+    <http:listener-config name="lms-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8092" />
+    </http:listener-config>
+    <apikit:config name="lms-config" api="lms.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <flow name="lms-main">
+        <http:listener config-ref="lms-httpListenerConfig" path="/api/1.0/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="lms-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:BAD_REQUEST">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Bad request"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">400</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Method not allowed"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">405</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Not acceptable"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">406</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Unsupported media type"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">415</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Not Implemented"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">501</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="lms-console">
+        <http:listener config-ref="lms-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="lms-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="delete:\librarymanagement\book:lms-config">
+        <logger level="INFO" message="delete:\librarymanagement\book:lms-config" />
+		<logger level="INFO" doc:name="Logger" doc:id="ab324c6d-5751-4a5d-928c-5f1c56cfe7da" message="#[attributes.headers.mock]"/>
+		<choice doc:name="Choice" doc:id="a818f360-9fb0-49be-aa2d-1cce3c7c8fd0" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="a87b846c-1003-4788-8f29-89f52a6536a6">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully deleted"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="82c2acad-7540-4666-a656-b14cc2fd7024" message="original flow"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="delete:\librarymanagement\librarian:lms-config">
+        <logger level="INFO" message="delete:\librarymanagement\librarian:lms-config" />
+        <choice doc:name="Choice" doc:id="181d11d1-64aa-4663-af3c-444a96aa6f7f" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="cc331175-69a3-4c0e-a35f-742672334869">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully deleted"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="2a3dbe89-29c1-4b5f-90dd-40aeb4c524c3" message="original flow"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="delete:\librarymanagement\library:lms-config">
+        <logger level="INFO" message="delete:\librarymanagement\library:lms-config" />
+        <choice doc:name="Choice" doc:id="4c64bf7d-b718-48ee-8d27-dc04112b85cb" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="8587864e-b05d-470d-8048-c9de86a283ff">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully deleted"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="418594d0-c6a8-44a4-8b14-49201224ea7d" message="original flow"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="delete:\librarymanagement\member:lms-config">
+        <logger level="INFO" message="delete:\librarymanagement\member:lms-config" />
+        <choice doc:name="Choice" doc:id="6281eafb-8094-4fba-925b-f707e15dbb92" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="dd419e9b-2916-4dab-9860-d6ccf2fb3d9f">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully deleted"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="f3298123-59db-41ef-b3d0-a03715c1b933" message="original flow"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="patch:\librarymanagement\book:lms-config">
+        <logger level="INFO" message="patch:\librarymanagement\book:lms-config" />
+        <choice doc:name="Choice" doc:id="3c90d1ca-a2e9-4687-83ef-397b3e8ff504" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="7d6e1076-c9d9-44f3-b46c-2f4b34770b35">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully updated"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="83cc049f-212e-4972-a294-304fcf8285c4" message="original flow"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="patch:\librarymanagement\librarian:lms-config">
+        <logger level="INFO" message="patch:\librarymanagement\librarian:lms-config" />
+        <choice doc:name="Choice" doc:id="d9e62d53-5e19-402c-967b-62f9c2336f28" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="aca09f66-5852-4e45-aa5c-5e9c1ff5adfd">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully updated"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="6de46d26-4471-4b65-b723-ff6122dec6df" message="original flow"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="patch:\librarymanagement\library:lms-config">
+        <logger level="INFO" message="patch:\librarymanagement\library:lms-config" />
+        <choice doc:name="Choice" doc:id="b7571444-b86f-40f3-bceb-013f41f9c59b" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="7438d3e0-f7bb-4a62-9bb9-3905e20c8a30">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully updated"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="a3a03e13-bfc3-454b-919b-5d12749c0d38" message="original flow"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="patch:\librarymanagement\member:lms-config">
+        <logger level="INFO" message="patch:\librarymanagement\member:lms-config" />
+        <choice doc:name="Choice" doc:id="dd6fab84-1a64-4a1e-b241-3df39edd90dc" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="56ac34b1-fb54-4a0b-895b-3116a794bd6d">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully updated"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="31596798-d6a1-4346-9a46-2419e84ce4d7" message="original flow"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="get:\librarymanagement\book\all:lms-config">
+        <logger level="INFO" message="get:\librarymanagement\book\all:lms-config" />
+        <choice doc:name="Choice" doc:id="79df8167-c390-404a-b4a8-a69d67b77aea" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="e6124b72-7aff-404d-bcef-e76eb4e3558e">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+[{
+        "bookId": "002",
+        "bookName": "Madoldwua",
+        "author": "martin Wickramasinghe",
+        "edition": "first",
+        "category": "Novel",
+        "libraryId": "L001",
+        "rackNo": "L001-A1",
+        "status": "available",
+        "issuedTo": null,
+        "dateOfIssued": null,
+        "dateOfPurchase": "19-06-2010",
+        "price": "300.00",
+        "description": "description"
+    },
+    {
+        "bookId": "002",
+        "bookName": "Madoldwua",
+        "author": "martin Wickramasinghe",
+        "edition": "first",
+        "category": "Novel",
+        "libraryId": "L001",
+        "rackNo": "L001-A1",
+        "status": "available",
+        "issuedTo": null,
+        "dateOfIssued": null,
+        "dateOfPurchase": "19-06-2010",
+        "price": "300.00",
+        "description": "description"
+    }
+    ]]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="88e3505f-09d3-46c9-b518-ce9b6f4b6e1d" message="original flow"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="get:\librarymanagement\book:lms-config">
+        <logger level="INFO" message="get:\librarymanagement\book:lms-config" />
+        <choice doc:name="Choice" doc:id="df15679a-665f-4f4e-a5c9-637fb8d9fb1e" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="3f4ab904-fbd4-4077-8501-72070353cfa1">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+[
+	{
+        "bookId": "002",
+        "bookName": "Madoldwua",
+        "author": "martin Wickramasinghe",
+        "edition": "first",
+        "category": "Novel",
+        "libraryId": "L001",
+        "rackNo": "L001-A1",
+        "status": "available",
+        "issuedTo": null,
+        "dateOfIssued": null,
+        "dateOfPurchase": "19-06-2010",
+        "price": "300.00",
+        "description": "description"
+    }
+]]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="f5748192-0d29-46fa-8926-c689dd04c7b7" message="original flow"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="get:\librarymanagement\librarian\designation:lms-config">
+        <logger level="INFO" message="get:\librarymanagement\librarian\designation:lms-config" />
+        <choice doc:name="Choice" doc:id="a9dcc679-976c-44e1-a8c2-4ad38a69748d" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="01f7aeaf-c5a0-46a8-8efa-e792b85a37b6">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+[
+	{
+"DesignationID" : 3,
+"DesignationName" : "Assistant",
+"Isdeleted":0,
+"IsActive":1,
+"LogInfo":"Created : 2019-11-04"
+}
+]]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="fa515a31-4d74-4a3a-9162-c38d9d38df4f" message="original flow"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="get:\librarymanagement\librarian:lms-config">
+        <logger level="INFO" message="get:\librarymanagement\librarian:lms-config" />
+        <choice doc:name="Choice" doc:id="b821d8d0-ac54-47f5-aa90-6d31c6ab996e" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="f1e4727e-58ae-48fc-8535-3daec1814ca1">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+[
+	{
+"StaffName":"Kasun Perera",
+"EmpNo":"85695",
+"JoinDate":"2018-02-06",
+"Dob":"1996-02-03",
+"Emailaddress":"kasunp@sliit.lk",
+"Address":"Colombo, Sri Lanka",
+"Isdeleted":0,
+"IsActive":1,
+"LogInfo":"2019-11-04",
+"LibraryId":1,
+"DesignationID":2
+}
+]]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="70e9d65f-5df6-490a-9fe2-0a4c45b6cf4b" message="original flow"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="get:\librarymanagement\library:lms-config">
+        <logger level="INFO" message="get:\librarymanagement\library:lms-config" />
+        <choice doc:name="Choice" doc:id="cad1f0db-3f1c-4c8e-a109-5f8cbe3cee1b" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="5d5c3ad7-291e-423f-a42c-f500805ea287">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+[
+	{
+        "libraryId": "L002",
+        "libraryName": "Nenasa",
+        "location": "Pannala",
+        "address": "pannala",
+        "contactNo": "0372246424",
+        "status": "active"
+    }
+]]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="61b57a5d-db47-4746-a7a4-00ce66c62ffa" message="original flow"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="get:\librarymanagement\member:lms-config">
+        <logger level="INFO" message="get:\librarymanagement\member:lms-config" />
+        <choice doc:name="Choice" doc:id="9f2cd192-080f-4363-986c-84d65ec8e688" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="adac9371-bc65-4d52-9724-999ca899dfb1">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+        "memberId": "M002",
+        "name": "Shanaka",
+        "nic": "912440729v",
+        "address": "colombo 9",
+        "email": "shanaka@sliit.lk",
+        "contactNo": "0750111415",
+        "numberOfBookIssued": "0",
+        "status": "active",
+        "description": "description"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="326a0fcf-d378-4b8a-883a-6767114337be" message="original flow"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="post:\librarymanagement\book:lms-config">
+        <logger level="INFO" message="post:\librarymanagement\book:lms-config" />
+        <choice doc:name="Choice" doc:id="138af532-6a90-4d9d-806c-13a6d83a1371" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="1a210420-0364-41bd-878d-223464300eba">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully inserted"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="846ecbd1-a72a-4866-b966-9f939e7d10f5" message="original flow"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="post:\librarymanagement\librarian\designation:lms-config">
+        <logger level="INFO" message="post:\librarymanagement\librarian\designation:lms-config" />
+        <choice doc:name="Choice" doc:id="4ad818f9-169e-4a45-8526-81b9389da856" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="68d83cbe-6584-434a-b23f-c14cea18a7ca">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully inserted"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="df7e6e39-0695-4d1d-b308-2d5991e387fd" message="original flow"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="post:\librarymanagement\librarian:lms-config">
+        <logger level="INFO" message="post:\librarymanagement\librarian:lms-config" />
+        <choice doc:name="Choice" doc:id="b57fb64e-de31-42c5-ad73-7cd0ac799049" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="7fd1b453-da90-4195-9e5d-5b457bab317c">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully inserted"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="d7f98033-f4fe-438f-a9d9-49d1f2fd1b81" message="original flow"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="post:\librarymanagement\library:lms-config">
+        <logger level="INFO" message="post:\librarymanagement\library:lms-config" />
+        <choice doc:name="Choice" doc:id="32b17019-8524-4599-928e-80d26de78b86" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="aa346cc2-a3b6-4295-84a6-b6eccc3554ee">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully inserted"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="1b9a7039-2bc0-4bd7-a9ac-4f74c983baca" message="original flow"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="post:\librarymanagement\member:lms-config">
+        <logger level="INFO" message="post:\librarymanagement\member:lms-config" />
+        <choice doc:name="Choice" doc:id="84ebc929-786a-4817-95a8-9cb5b7ddc125" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="4ef72fd7-c0bb-48b4-84cd-2d7588363651">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully inserted"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="37626c9d-420d-46d4-b9e5-6b3281f112cd" message="original flow"/>
+			</otherwise>
+		</choice>
+    </flow>
+</mule>
