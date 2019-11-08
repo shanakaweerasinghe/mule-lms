@@ -21,7 +21,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 						<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-payload filter ((value,index) -> (value.bookName contains vars.bookName))]]></ee:set-payload>
+payload filter ((value,index) -> (value.bookName == vars.bookName))]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
 			</otherwise>
@@ -90,5 +90,93 @@ output application/json
 				<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
+	</flow>
+	<flow name="lms-bookFlow-issueBook" doc:id="dbf20aea-c103-4300-8cc4-81a3ab90ecaa" >
+		<logger level="INFO" doc:name="Logger" doc:id="687fe061-a7cf-42dd-8bcf-fc7ab47eb07e" message="Issue Book flow"/>
+		<set-variable value="#[payload.bookName]" doc:name="bookName" doc:id="b6fc22ff-cc11-4c5d-a2c1-11c9db991757" variableName="bookName"/>
+		<set-variable value="#[payload.issuedTo]" doc:name="memberName" doc:id="33e2e8cc-fe11-46e7-9978-36898e2dec79" variableName="memberName"/>
+		<set-variable value="#[payload]" doc:name="originalPayload" doc:id="8b20af4f-f774-4752-ba4a-cbe0f975bc9b" variableName="originalPayload"/>
+		<flow-ref doc:name="Flow Reference" doc:id="19541f94-3896-444b-97fb-6e3130befb85" name="lms-bookFlow_updateBook"/>
+		<flow-ref doc:name="Flow Reference" doc:id="1ca88295-1f7e-4e63-8512-128a8dd73474" name="lms-bookFlow_updateMember"/>
+	</flow>
+	<flow name="lms-bookFlow_updateMember" doc:id="eff1d70c-66ce-42f7-9b71-175282eb2c65" >
+		<logger level="INFO" doc:name="Logger" doc:id="09e1cc27-53bf-49e7-ace7-f3aed28bba7e" message="Updating member"/>
+		<http:request method="GET" doc:name="Request" doc:id="38a55c59-2403-4afb-ae9a-9256cbcd0995" config-ref="HTTP_Request_configuration_member" path="/memberList"/>
+				<ee:transform doc:name="Transform Message" doc:id="1acae112-88a2-42c8-ad40-0bf24a905aea" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload filter ((value,index) -> (value.name == vars.memberName))]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="fc04a9f2-ecb1-41f6-966a-0b6c5144f09b" message="#[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="0fe93875-0dd7-470a-804f-7936c126fb15" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="count" ><![CDATA[%dw 2.0
+output application/java
+---
+payload[0].numberOfBookIssued as Number + 1]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<ee:transform doc:name="Transform Message" doc:id="5bf6c4d4-4933-42f0-9b00-18d06ab6d3d2" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+        "memberId": payload[0].memberId,
+        "name": payload[0].name,
+        "nic": payload[0].nic,
+        "address": payload[0].address,
+        "email": payload[0].email,
+        "contactNo": payload[0].contactNo,
+        "numberOfBookIssued": vars.count as String,
+        "status": payload[0].status,
+        "description": payload[0].description
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="166a00d3-b72b-4269-ad84-9faf3c7dfd11" message="#[payload]"/>
+		<flow-ref doc:name="Flow Reference" doc:id="5f90bf4f-016c-4227-a06f-cf02385af50e" name="lms-memberFlow-patch"/>
+	</flow>
+	<flow name="lms-bookFlow_updateBook" doc:id="56704aea-95ee-48b2-9bf5-4b9c1b4f89a8" >
+		<logger level="INFO" doc:name="Logger" doc:id="f042dffb-4168-4033-b801-070571aea6d5" />
+		<http:request method="GET" doc:name="Request" doc:id="e5df6c4e-122a-4cb7-a3fc-41bfb5f8bdee" path="/bookList" config-ref="HTTP_Request_configuration_book"/>
+				<ee:transform doc:name="Transform Message" doc:id="dbcf29a0-4aba-4455-9e62-cf5595428117" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload filter ((value,index) -> (value.bookName == vars.bookName))]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="83386086-4bee-4027-87e4-d9a59494aae4" message="#[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="0784127a-7c70-4c70-9d9a-63c69b511c6c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+        "bookId": payload[0].bookId,
+        "bookName": payload[0].bookName,
+        "author": payload[0].author,
+        "edition": payload[0].edition,
+        "category": payload[0].category,
+        "libraryId": payload[0].libraryId,
+        "rackNo": payload[0].rackNo,
+        "status": vars.originalPayload.status,
+        "issuedTo": vars.originalPayload.issuedTo,
+        "dateOfIssued": vars.originalPayload.dateOfIssued,
+        "dateOfPurchase": payload[0].dateOfPurchase,
+        "price": payload[0].price,
+        "description": payload[0].description
+    }]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="1d0ef468-d94e-4c1f-9b0f-f925ffd1d0b5" message="#[payload]"/>
+		<flow-ref doc:name="Flow Reference" doc:id="71fbc104-3202-4b9d-a7d0-ae0a906c7b73" name="lms-bookFlow-patch"/>
 	</flow>
 </mule>

@@ -13,6 +13,12 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<http:request-config name="HTTP_Request_configuration_member" doc:name="HTTP Request configuration" doc:id="1608ace0-d58b-4cb5-97e2-740b8f228a1f" basePath="/memberManagement" >
 		<http:request-connection host="${member.host}" port="${member.port}" />
 	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration_staff" doc:name="HTTP Request configuration" doc:id="e12da335-3b9c-4445-a04d-74974ba54e7c" >
+		<http:request-connection host="${staff.host}" port="${staff.port}" />
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration_library" doc:name="HTTP Request configuration" doc:id="96b4b553-4f32-4c10-ac7f-e1825dedce36" >
+		<http:request-connection host="${library.host}" port="${library.port}" />
+	</http:request-config>
     
 
 </mule>

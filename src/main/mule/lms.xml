@@ -318,7 +318,7 @@ output application/json
 			</otherwise>
 		</choice>
     </flow>
-    <flow name="get:\librarymanagement\book\all:lms-config">
+    <flow name="post:\librarymanagement\book\issueBook:lms-config">
         <logger level="INFO" message="get:\librarymanagement\book\all:lms-config" />
         <choice doc:name="Choice" doc:id="79df8167-c390-404a-b4a8-a69d67b77aea" >
 			<when expression="#[attributes.headers.mock == 'true']">
@@ -366,6 +366,7 @@ output application/json
 			</when>
 			<otherwise >
 				<logger level="INFO" doc:name="Logger" doc:id="88e3505f-09d3-46c9-b518-ce9b6f4b6e1d" message="original flow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="d481a738-8ff6-494a-95bb-6024539c7976" name="lms-bookFlow-issueBook"/>
 			</otherwise>
 		</choice>
     </flow>
