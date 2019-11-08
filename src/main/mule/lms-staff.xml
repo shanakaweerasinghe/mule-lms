@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<flow name="lms-staffFlow-get" doc:id="aff555d7-9b38-4847-a18d-95749e1ed63f" >
 		<logger level="INFO" doc:name="Logger" doc:id="fa127b53-3f50-41e9-a5d6-a18b399783ac" />
-	</flow>
+		<http:request method="GET" doc:name="Request" doc:id="8aa5342d-ef5d-4554-b577-f132ccc46798" config-ref="HTTP_Request_configuration_staff" path="/selectAllStaffMember"/>
+		<ee:transform doc:name="Transform Message" doc:id="60dae9a6-6e5f-45f0-929a-ad43cdf64c0f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	
+</flow>
 	<flow name="lms-staffFlow-post" doc:id="36c85d06-c0dc-45b3-af0e-609d99d0b0a1" >
 		<logger level="INFO" doc:name="Logger" doc:id="d6173f84-198d-4a47-b15e-6681145290bb" />
 	</flow>

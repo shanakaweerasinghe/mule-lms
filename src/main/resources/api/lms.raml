@@ -22,17 +22,32 @@ title: Sample API
     post:
     get:
       queryParameters:
-        LibraryName:
+        LibraryId:
           required: false
           type: string
           example: "Nenasa"
     patch:
+      queryParameters:
+        LibraryId:
+          required: false
+          type: string
+          example: "Nenasa"
     delete:
       queryParameters:
         libraryId:
           required: true
           type: string
           example: "0001"
+    /active:
+      get:
+    /staff:
+      get:
+        queryParameters:
+          LibraryId:
+            required: false
+            type: string
+            example: "Nenasa"
+            
 
   /member:
     post:

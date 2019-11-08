@@ -121,6 +121,94 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
+    <flow name="get:\librarymanagement\book:lms-config">
+        <logger level="INFO" message="get:\librarymanagement\book:lms-config" />
+        <choice doc:name="Choice" doc:id="48a4b28f-9273-4813-8c3b-2f5bcd643c0e" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="f2e25721-ca81-46de-9f23-31b59b60ef32">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+[
+	{
+        "bookId": "002",
+        "bookName": "Madoldwua",
+        "author": "martin Wickramasinghe",
+        "edition": "first",
+        "category": "Novel",
+        "libraryId": "L001",
+        "rackNo": "L001-A1",
+        "status": "available",
+        "issuedTo": null,
+        "dateOfIssued": null,
+        "dateOfPurchase": "19-06-2010",
+        "price": "300.00",
+        "description": "description"
+    }
+]]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="564d8bf5-b740-4d16-a70b-e619b314cbd1" message="original flow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="662ac238-268c-4357-b08b-90c393fd021b" name="lms-bookFlow-get"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="post:\librarymanagement\book:lms-config">
+        <logger level="INFO" message="post:\librarymanagement\book:lms-config" />
+        <choice doc:name="Choice" doc:id="0ed5dd51-29b6-4b68-952c-84821318fc96" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="fba10aa0-9655-42a6-be32-36eeb96a67a2">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully inserted"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="00867f16-7885-4361-be62-f9ba624054c9" message="original flow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="c47ab5cc-e85a-435e-8034-eac904296f9a" name="lms-bookFlow-post"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="patch:\librarymanagement\book:lms-config">
+        <logger level="INFO" message="patch:\librarymanagement\book:lms-config" />
+        <choice doc:name="Choice" doc:id="0ac8e406-efea-4800-a624-e38be12b2782" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="36ffe61e-b52a-4702-aaac-ec5ee8889cbb">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully updated"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="7a9b4b4c-4bc9-4056-ae2e-2e2a866f91f0" message="original flow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="6cd120f2-cc5d-4153-b1fb-e1f333ebc8e8" name="lms-bookFlow-patch"/>
+			</otherwise>
+		</choice>
+    </flow>
     <flow name="delete:\librarymanagement\book:lms-config">
         <logger level="INFO" message="delete:\librarymanagement\book:lms-config" />
 		<logger level="INFO" doc:name="Logger" doc:id="ab324c6d-5751-4a5d-928c-5f1c56cfe7da" message="#[attributes.headers.mock]"/>
@@ -147,182 +235,11 @@ output application/json
 			</otherwise>
 		</choice>
     </flow>
-    <flow name="delete:\librarymanagement\librarian:lms-config">
-        <logger level="INFO" message="delete:\librarymanagement\librarian:lms-config" />
-        <choice doc:name="Choice" doc:id="181d11d1-64aa-4663-af3c-444a96aa6f7f" >
-			<when expression="#[attributes.headers.mock == 'true']">
-				<ee:transform doc:name="Transform Message" doc:id="cc331175-69a3-4c0e-a35f-742672334869">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-	status : "success",
-	details: "successfully deleted"
-}]]></ee:set-payload>
-			</ee:message>
-					<ee:variables >
-						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
-					</ee:variables>
-		</ee:transform>
-			</when>
-			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="2a3dbe89-29c1-4b5f-90dd-40aeb4c524c3" message="original flow"/>
-			</otherwise>
-		</choice>
-    </flow>
-    <flow name="delete:\librarymanagement\library:lms-config">
-        <logger level="INFO" message="delete:\librarymanagement\library:lms-config" />
-        <choice doc:name="Choice" doc:id="4c64bf7d-b718-48ee-8d27-dc04112b85cb" >
-			<when expression="#[attributes.headers.mock == 'true']">
-				<ee:transform doc:name="Transform Message" doc:id="8587864e-b05d-470d-8048-c9de86a283ff">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-	status : "success",
-	details: "successfully deleted"
-}]]></ee:set-payload>
-			</ee:message>
-					<ee:variables >
-						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
-					</ee:variables>
-		</ee:transform>
-			</when>
-			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="418594d0-c6a8-44a4-8b14-49201224ea7d" message="original flow"/>
-			</otherwise>
-		</choice>
-    </flow>
-    <flow name="delete:\librarymanagement\member:lms-config">
-        <logger level="INFO" message="delete:\librarymanagement\member:lms-config" />
-        <choice doc:name="Choice" doc:id="6281eafb-8094-4fba-925b-f707e15dbb92" >
-			<when expression="#[attributes.headers.mock == 'true']">
-				<ee:transform doc:name="Transform Message" doc:id="dd419e9b-2916-4dab-9860-d6ccf2fb3d9f">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-	status : "success",
-	details: "successfully deleted"
-}]]></ee:set-payload>
-			</ee:message>
-					<ee:variables >
-						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
-					</ee:variables>
-		</ee:transform>
-			</when>
-			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="f3298123-59db-41ef-b3d0-a03715c1b933" message="original flow"/>
-				<flow-ref doc:name="Flow Reference" doc:id="355b59f9-5541-4e23-a470-19d72098eef0" name="lms-memberFlow-delete"/>
-			</otherwise>
-		</choice>
-    </flow>
-    <flow name="patch:\librarymanagement\book:lms-config">
-        <logger level="INFO" message="patch:\librarymanagement\book:lms-config" />
-        <choice doc:name="Choice" doc:id="3c90d1ca-a2e9-4687-83ef-397b3e8ff504" >
-			<when expression="#[attributes.headers.mock == 'true']">
-				<ee:transform doc:name="Transform Message" doc:id="7d6e1076-c9d9-44f3-b46c-2f4b34770b35">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-	status : "success",
-	details: "successfully updated"
-}]]></ee:set-payload>
-			</ee:message>
-					<ee:variables >
-						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
-					</ee:variables>
-		</ee:transform>
-			</when>
-			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="83cc049f-212e-4972-a294-304fcf8285c4" message="original flow"/>
-				<flow-ref doc:name="Flow Reference" doc:id="00bf11d9-825b-4602-bd5d-89010cdaa97f" name="lms-bookFlow-patch"/>
-			</otherwise>
-		</choice>
-    </flow>
-    <flow name="patch:\librarymanagement\librarian:lms-config">
-        <logger level="INFO" message="patch:\librarymanagement\librarian:lms-config" />
-        <choice doc:name="Choice" doc:id="d9e62d53-5e19-402c-967b-62f9c2336f28" >
-			<when expression="#[attributes.headers.mock == 'true']">
-				<ee:transform doc:name="Transform Message" doc:id="aca09f66-5852-4e45-aa5c-5e9c1ff5adfd">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-	status : "success",
-	details: "successfully updated"
-}]]></ee:set-payload>
-			</ee:message>
-					<ee:variables >
-						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
-					</ee:variables>
-		</ee:transform>
-			</when>
-			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="6de46d26-4471-4b65-b723-ff6122dec6df" message="original flow"/>
-			</otherwise>
-		</choice>
-    </flow>
-    <flow name="patch:\librarymanagement\library:lms-config">
-        <logger level="INFO" message="patch:\librarymanagement\library:lms-config" />
-        <choice doc:name="Choice" doc:id="b7571444-b86f-40f3-bceb-013f41f9c59b" >
-			<when expression="#[attributes.headers.mock == 'true']">
-				<ee:transform doc:name="Transform Message" doc:id="7438d3e0-f7bb-4a62-9bb9-3905e20c8a30">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-	status : "success",
-	details: "successfully updated"
-}]]></ee:set-payload>
-			</ee:message>
-					<ee:variables >
-						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
-					</ee:variables>
-		</ee:transform>
-			</when>
-			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="a3a03e13-bfc3-454b-919b-5d12749c0d38" message="original flow"/>
-			</otherwise>
-		</choice>
-    </flow>
-    <flow name="patch:\librarymanagement\member:lms-config">
-        <logger level="INFO" message="patch:\librarymanagement\member:lms-config" />
-        <choice doc:name="Choice" doc:id="dd6fab84-1a64-4a1e-b241-3df39edd90dc" >
-			<when expression="#[attributes.headers.mock == 'true']">
-				<ee:transform doc:name="Transform Message" doc:id="56ac34b1-fb54-4a0b-895b-3116a794bd6d">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-	status : "success",
-	details: "successfully updated"
-}]]></ee:set-payload>
-			</ee:message>
-					<ee:variables >
-						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
-					</ee:variables>
-		</ee:transform>
-			</when>
-			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="31596798-d6a1-4346-9a46-2419e84ce4d7" message="original flow"/>
-				<flow-ref doc:name="Flow Reference" doc:id="2c84f7c4-1559-4838-9e0c-86b114b0d858" name="lms-memberFlow-patch"/>
-			</otherwise>
-		</choice>
-    </flow>
     <flow name="post:\librarymanagement\book\issueBook:lms-config">
         <logger level="INFO" message="get:\librarymanagement\book\all:lms-config" />
-        <choice doc:name="Choice" doc:id="79df8167-c390-404a-b4a8-a69d67b77aea" >
+        <choice doc:name="Choice" doc:id="8e672479-cc23-470c-bc7f-99ffc0326fd7" >
 			<when expression="#[attributes.headers.mock == 'true']">
-				<ee:transform doc:name="Transform Message" doc:id="e6124b72-7aff-404d-bcef-e76eb4e3558e">
+				<ee:transform doc:name="Transform Message" doc:id="54beb804-9148-4354-8fe1-c2741416201c">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -365,37 +282,31 @@ output application/json
 		</ee:transform>
 			</when>
 			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="88e3505f-09d3-46c9-b518-ce9b6f4b6e1d" message="original flow"/>
-				<flow-ref doc:name="Flow Reference" doc:id="d481a738-8ff6-494a-95bb-6024539c7976" name="lms-bookFlow-issueBook"/>
+				<logger level="INFO" doc:name="Logger" doc:id="6536acdf-0d04-4d95-85e5-a092848c4d02" message="original flow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="4b6f7087-5c76-4219-b2f1-16804992d6c7" name="lms-bookFlow-issueBook"/>
 			</otherwise>
 		</choice>
     </flow>
-    <flow name="get:\librarymanagement\book:lms-config">
-        <logger level="INFO" message="get:\librarymanagement\book:lms-config" />
-        <choice doc:name="Choice" doc:id="df15679a-665f-4f4e-a5c9-637fb8d9fb1e" >
+    <flow name="get:\librarymanagement\member:lms-config">
+        <logger level="INFO" message="get:\librarymanagement\member:lms-config" />
+        <choice doc:name="Choice" doc:id="e6b764c1-346e-4a62-b8b5-dbb966496685" >
 			<when expression="#[attributes.headers.mock == 'true']">
-				<ee:transform doc:name="Transform Message" doc:id="3f4ab904-fbd4-4077-8501-72070353cfa1">
+				<ee:transform doc:name="Transform Message" doc:id="04885466-223d-4768-98bc-970466b47e0c">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-[
-	{
-        "bookId": "002",
-        "bookName": "Madoldwua",
-        "author": "martin Wickramasinghe",
-        "edition": "first",
-        "category": "Novel",
-        "libraryId": "L001",
-        "rackNo": "L001-A1",
-        "status": "available",
-        "issuedTo": null,
-        "dateOfIssued": null,
-        "dateOfPurchase": "19-06-2010",
-        "price": "300.00",
+{
+        "memberId": "M002",
+        "name": "Shanaka",
+        "nic": "912440729v",
+        "address": "colombo 9",
+        "email": "shanaka@sliit.lk",
+        "contactNo": "0750111415",
+        "numberOfBookIssued": "0",
+        "status": "active",
         "description": "description"
-    }
-]]]></ee:set-payload>
+}]]></ee:set-payload>
 			</ee:message>
 					<ee:variables >
 						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
@@ -403,29 +314,24 @@ output application/json
 		</ee:transform>
 			</when>
 			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="f5748192-0d29-46fa-8926-c689dd04c7b7" message="original flow"/>
-				<flow-ref doc:name="Flow Reference" doc:id="5a6de12f-29e3-43ac-a1c4-405a02f9fefa" name="lms-bookFlow-get"/>
+				<logger level="INFO" doc:name="Logger" doc:id="83b93dc0-a7a1-4e06-813f-162dc15a53ee" message="original flow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="050cbf67-a1b0-4d17-b038-dc8e2139a5de" name="lms-memberFlow-get"/>
 			</otherwise>
 		</choice>
     </flow>
-    <flow name="get:\librarymanagement\librarian\designation:lms-config">
-        <logger level="INFO" message="get:\librarymanagement\librarian\designation:lms-config" />
-        <choice doc:name="Choice" doc:id="a9dcc679-976c-44e1-a8c2-4ad38a69748d" >
+    <flow name="post:\librarymanagement\member:lms-config">
+        <logger level="INFO" message="post:\librarymanagement\member:lms-config" />
+        <choice doc:name="Choice" doc:id="1555949e-5bad-4795-8fb3-4137a0c149cc" >
 			<when expression="#[attributes.headers.mock == 'true']">
-				<ee:transform doc:name="Transform Message" doc:id="01f7aeaf-c5a0-46a8-8efa-e792b85a37b6">
+				<ee:transform doc:name="Transform Message" doc:id="631b69c7-3bd2-42fe-8946-027f0c46241a">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-[
-	{
-"DesignationID" : 3,
-"DesignationName" : "Assistant",
-"Isdeleted":0,
-"IsActive":1,
-"LogInfo":"Created : 2019-11-04"
-}
-]]]></ee:set-payload>
+{
+	status : "success",
+	details: "successfully inserted"
+}]]></ee:set-payload>
 			</ee:message>
 					<ee:variables >
 						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
@@ -433,15 +339,66 @@ output application/json
 		</ee:transform>
 			</when>
 			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="fa515a31-4d74-4a3a-9162-c38d9d38df4f" message="original flow"/>
+				<logger level="INFO" doc:name="Logger" doc:id="c60c0ed6-1aee-4f62-aa0b-b6cfe8bc1808" message="original flow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="40908352-b6b7-4acc-84ef-904abfc7a7be" name="lms-memberFlow-post"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="patch:\librarymanagement\member:lms-config">
+        <logger level="INFO" message="patch:\librarymanagement\member:lms-config" />
+        <choice doc:name="Choice" doc:id="8e94f122-69d0-4c73-85ca-3b44b66d53c1" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="3e0f401d-6c2a-4a60-92c1-ce5c8f8ac656">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully updated"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="98a854c6-6328-4b5b-a35e-72533f2141f1" message="original flow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="62612ef9-271d-4b88-aa75-236298956329" name="lms-memberFlow-patch"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="delete:\librarymanagement\member:lms-config">
+        <logger level="INFO" message="delete:\librarymanagement\member:lms-config" />
+        <choice doc:name="Choice" doc:id="3a5de934-fcd5-4c07-ae54-f8210f7f7798" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="2a6da87f-ff12-437e-b4f1-59813073f977">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully deleted"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="d6ce4f65-b5c3-4011-adad-ea433f6b3d66" message="original flow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="3425de6d-dced-410c-a07a-4943ecfc7afb" name="lms-memberFlow-delete"/>
 			</otherwise>
 		</choice>
     </flow>
     <flow name="get:\librarymanagement\librarian:lms-config">
         <logger level="INFO" message="get:\librarymanagement\librarian:lms-config" />
-        <choice doc:name="Choice" doc:id="b821d8d0-ac54-47f5-aa90-6d31c6ab996e" >
+        <choice doc:name="Choice" doc:id="5d7b4476-3ac6-4eee-8f1d-54c9702dc6fb" >
 			<when expression="#[attributes.headers.mock == 'true']">
-				<ee:transform doc:name="Transform Message" doc:id="f1e4727e-58ae-48fc-8535-3daec1814ca1">
+				<ee:transform doc:name="Transform Message" doc:id="6cfe7631-f8ec-4ee2-a25b-56f97a411465">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -468,15 +425,144 @@ output application/json
 		</ee:transform>
 			</when>
 			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="70e9d65f-5df6-490a-9fe2-0a4c45b6cf4b" message="original flow"/>
+				<logger level="INFO" doc:name="Logger" doc:id="fc0932ad-00bd-4a49-922d-d7f4284cb047" message="original flow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="7555cc8e-e45f-4e27-900c-c19eec1863ec" name="lms-staffFlow-get"/>
 			</otherwise>
 		</choice>
     </flow>
+    <flow name="post:\librarymanagement\librarian:lms-config">
+        <logger level="INFO" message="post:\librarymanagement\librarian:lms-config" />
+        <choice doc:name="Choice" doc:id="712d7c0f-3f15-4187-a209-da62f1489c4e" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="cee1bc57-f319-4c00-836c-bee81bf35e81">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully inserted"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="6dc455f3-b49a-4755-af99-81d4a0c8f982" message="original flow"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="patch:\librarymanagement\librarian:lms-config">
+        <logger level="INFO" message="patch:\librarymanagement\librarian:lms-config" />
+        <choice doc:name="Choice" doc:id="79fa9104-32e2-4c4d-95e7-992d586946ce" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="2afcc847-d1e5-4af0-99a7-5af35729889e">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully updated"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="0475895b-9879-483c-aa22-04f39e22dae7" message="original flow"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="delete:\librarymanagement\librarian:lms-config">
+        <logger level="INFO" message="delete:\librarymanagement\librarian:lms-config" />
+        <choice doc:name="Choice" doc:id="181d11d1-64aa-4663-af3c-444a96aa6f7f" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="cc331175-69a3-4c0e-a35f-742672334869">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully deleted"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="2a3dbe89-29c1-4b5f-90dd-40aeb4c524c3" message="original flow"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="get:\librarymanagement\librarian\designation:lms-config">
+        <logger level="INFO" message="get:\librarymanagement\librarian\designation:lms-config" />
+        <choice doc:name="Choice" doc:id="5d0d0315-70e9-47ea-a02b-e08551748d25" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="2b79efc0-6c7a-488c-8db1-6b6ed8e479e0">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+[
+	{
+"DesignationID" : 3,
+"DesignationName" : "Assistant",
+"Isdeleted":0,
+"IsActive":1,
+"LogInfo":"Created : 2019-11-04"
+}
+]]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="9ad31b77-6efe-4d45-9121-0c7e05501811" message="original flow"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="post:\librarymanagement\librarian\designation:lms-config">
+        <logger level="INFO" message="post:\librarymanagement\librarian\designation:lms-config" />
+        <choice doc:name="Choice" doc:id="fdc2542d-f281-428e-a533-335247db8c15" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="3a61ae9f-5b75-4dcf-8845-662367d9f2ab">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully inserted"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="3d9fb8e3-6863-4f3d-b4c1-06139b3d8681" message="original flow"/>
+			</otherwise>
+		</choice>
+    </flow>
+    
+    
+    
     <flow name="get:\librarymanagement\library:lms-config">
         <logger level="INFO" message="get:\librarymanagement\library:lms-config" />
-        <choice doc:name="Choice" doc:id="cad1f0db-3f1c-4c8e-a109-5f8cbe3cee1b" >
+        <choice doc:name="Choice" doc:id="555d4b50-11d4-4f79-952b-a9e7c22af9d0" >
 			<when expression="#[attributes.headers.mock == 'true']">
-				<ee:transform doc:name="Transform Message" doc:id="5d5c3ad7-291e-423f-a42c-f500805ea287">
+				<ee:transform doc:name="Transform Message" doc:id="6978f32c-ec66-40af-9702-dc5a7e3117d9">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -498,120 +584,20 @@ output application/json
 		</ee:transform>
 			</when>
 			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="61b57a5d-db47-4746-a7a4-00ce66c62ffa" message="original flow"/>
+				<logger level="INFO" doc:name="Logger" doc:id="d2df7817-347b-4ce8-9981-0b0b78a719a3" message="original flow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="d85d9f3e-1658-4ea4-a25a-2af7e1451904" name="lms-libraryFlow-get"/>
 			</otherwise>
 		</choice>
     </flow>
-    <flow name="get:\librarymanagement\member:lms-config">
-        <logger level="INFO" message="get:\librarymanagement\member:lms-config" />
-        <choice doc:name="Choice" doc:id="9f2cd192-080f-4363-986c-84d65ec8e688" >
-			<when expression="#[attributes.headers.mock == 'true']">
-				<ee:transform doc:name="Transform Message" doc:id="adac9371-bc65-4d52-9724-999ca899dfb1">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-        "memberId": "M002",
-        "name": "Shanaka",
-        "nic": "912440729v",
-        "address": "colombo 9",
-        "email": "shanaka@sliit.lk",
-        "contactNo": "0750111415",
-        "numberOfBookIssued": "0",
-        "status": "active",
-        "description": "description"
-}]]></ee:set-payload>
-			</ee:message>
-					<ee:variables >
-						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
-					</ee:variables>
-		</ee:transform>
-			</when>
-			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="326a0fcf-d378-4b8a-883a-6767114337be" message="original flow"/>
-				<flow-ref doc:name="Flow Reference" doc:id="e3e21291-fb48-4214-9cf3-ec0f5f5aafcb" name="lms-memberFlow-get"/>
-			</otherwise>
-		</choice>
-    </flow>
-    <flow name="post:\librarymanagement\book:lms-config">
-        <logger level="INFO" message="post:\librarymanagement\book:lms-config" />
-        <choice doc:name="Choice" doc:id="138af532-6a90-4d9d-806c-13a6d83a1371" >
-			<when expression="#[attributes.headers.mock == 'true']">
-				<ee:transform doc:name="Transform Message" doc:id="1a210420-0364-41bd-878d-223464300eba">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-	status : "success",
-	details: "successfully inserted"
-}]]></ee:set-payload>
-			</ee:message>
-					<ee:variables >
-						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
-					</ee:variables>
-		</ee:transform>
-			</when>
-			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="846ecbd1-a72a-4866-b966-9f939e7d10f5" message="original flow"/>
-				<flow-ref doc:name="Flow Reference" doc:id="0de964d3-0f92-45b9-9895-227ea43b06b0" name="lms-bookFlow-post"/>
-			</otherwise>
-		</choice>
-    </flow>
-    <flow name="post:\librarymanagement\librarian\designation:lms-config">
-        <logger level="INFO" message="post:\librarymanagement\librarian\designation:lms-config" />
-        <choice doc:name="Choice" doc:id="4ad818f9-169e-4a45-8526-81b9389da856" >
-			<when expression="#[attributes.headers.mock == 'true']">
-				<ee:transform doc:name="Transform Message" doc:id="68d83cbe-6584-434a-b23f-c14cea18a7ca">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-	status : "success",
-	details: "successfully inserted"
-}]]></ee:set-payload>
-			</ee:message>
-					<ee:variables >
-						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
-					</ee:variables>
-		</ee:transform>
-			</when>
-			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="df7e6e39-0695-4d1d-b308-2d5991e387fd" message="original flow"/>
-			</otherwise>
-		</choice>
-    </flow>
-    <flow name="post:\librarymanagement\librarian:lms-config">
-        <logger level="INFO" message="post:\librarymanagement\librarian:lms-config" />
-        <choice doc:name="Choice" doc:id="b57fb64e-de31-42c5-ad73-7cd0ac799049" >
-			<when expression="#[attributes.headers.mock == 'true']">
-				<ee:transform doc:name="Transform Message" doc:id="7fd1b453-da90-4195-9e5d-5b457bab317c">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-	status : "success",
-	details: "successfully inserted"
-}]]></ee:set-payload>
-			</ee:message>
-					<ee:variables >
-						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
-					</ee:variables>
-		</ee:transform>
-			</when>
-			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="d7f98033-f4fe-438f-a9d9-49d1f2fd1b81" message="original flow"/>
-			</otherwise>
-		</choice>
-    </flow>
+    
+    
+    
+    
     <flow name="post:\librarymanagement\library:lms-config">
         <logger level="INFO" message="post:\librarymanagement\library:lms-config" />
-        <choice doc:name="Choice" doc:id="32b17019-8524-4599-928e-80d26de78b86" >
+        <choice doc:name="Choice" doc:id="75fc9f23-9da7-4586-b76f-c87ee7b512c6" >
 			<when expression="#[attributes.headers.mock == 'true']">
-				<ee:transform doc:name="Transform Message" doc:id="aa346cc2-a3b6-4295-84a6-b6eccc3554ee">
+				<ee:transform doc:name="Transform Message" doc:id="a840148b-7d8c-4efe-b668-cefe40bbba08">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -627,22 +613,23 @@ output application/json
 		</ee:transform>
 			</when>
 			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="1b9a7039-2bc0-4bd7-a9ac-4f74c983baca" message="original flow"/>
+				<logger level="INFO" doc:name="Logger" doc:id="0aa7d3c0-40a9-4625-84dd-9e80e54028c7" message="original flow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="d5e2976a-35e8-4c60-8dc2-5c4e20dad57f" name="lms-libraryFlow-post"/>
 			</otherwise>
 		</choice>
     </flow>
-    <flow name="post:\librarymanagement\member:lms-config">
-        <logger level="INFO" message="post:\librarymanagement\member:lms-config" />
-        <choice doc:name="Choice" doc:id="84ebc929-786a-4817-95a8-9cb5b7ddc125" >
+    <flow name="patch:\librarymanagement\library:lms-config">
+        <logger level="INFO" message="patch:\librarymanagement\library:lms-config" />
+        <choice doc:name="Choice" doc:id="b7571444-b86f-40f3-bceb-013f41f9c59b" >
 			<when expression="#[attributes.headers.mock == 'true']">
-				<ee:transform doc:name="Transform Message" doc:id="4ef72fd7-c0bb-48b4-84cd-2d7588363651">
+				<ee:transform doc:name="Transform Message" doc:id="7438d3e0-f7bb-4a62-9bb9-3905e20c8a30">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
 	status : "success",
-	details: "successfully inserted"
+	details: "successfully updated"
 }]]></ee:set-payload>
 			</ee:message>
 					<ee:variables >
@@ -651,9 +638,89 @@ output application/json
 		</ee:transform>
 			</when>
 			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="37626c9d-420d-46d4-b9e5-6b3281f112cd" message="original flow"/>
-				<flow-ref doc:name="Flow Reference" doc:id="b635342e-580b-4336-b9f2-64e34f0f0b94" name="lms-memberFlow-post"/>
+				<logger level="INFO" doc:name="Logger" doc:id="a3a03e13-bfc3-454b-919b-5d12749c0d38" message="original flow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="ed04e3ab-793d-4e44-9768-62edd4463db3" name="lms-libraryFlow-patch"/>
 			</otherwise>
 		</choice>
     </flow>
+    <flow name="delete:\librarymanagement\library:lms-config">
+        <logger level="INFO" message="delete:\librarymanagement\library:lms-config" />
+        <choice doc:name="Choice" doc:id="a3ea0150-1054-4bb1-b4ff-990ac325b748" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="93f02b56-6191-4745-a4db-0ba5deec9560">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully deleted"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="8b0f69cb-5a97-4875-8259-6f4d6a7dc0ea" message="original flow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="21bd0ce8-d81d-460a-b449-ee57eb73d35b" name="lms-libraryFlow-delete"/>
+			</otherwise>
+		</choice>
+    </flow>
+    <flow name="get:\librarymanagement\library\staff:lms-config">
+        <logger level="INFO" message="delete:\librarymanagement\library:lms-config" />
+        <choice doc:name="Choice" doc:id="d27213c9-ae6c-48d8-b3b9-e70b2a9cc498" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="34c41658-4306-4995-bb9e-1f098db7c637">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully deleted"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="461c2439-139d-41a0-a333-f7c87782cce0" message="original flow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="1b04f36d-3706-445c-9977-ddd0b5f49bff" name="lms-libraryFlow-staff"/>
+			</otherwise>
+		</choice>
+    </flow>
+    
+    <flow name="get:\librarymanagement\library\active:lms-config">
+        <logger level="INFO" message="delete:\librarymanagement\library:lms-config" />
+        <choice doc:name="Choice" doc:id="4e3b3b3e-f987-4e8e-a381-ff5baf6f241a" >
+			<when expression="#[attributes.headers.mock == 'true']">
+				<ee:transform doc:name="Transform Message" doc:id="87f561cb-5a92-4f19-8684-402ce0d96cd2">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully deleted"
+}]]></ee:set-payload>
+			</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="ff3fc340-d74a-4308-a338-7a85ad7e2de7" message="original flow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="5de002ac-a4de-4abb-b671-609ec93ec55c" name="lms-libraryFlow-active"/>
+			</otherwise>
+		</choice>
+    </flow>
+    
+    
+    
+    
 </mule>

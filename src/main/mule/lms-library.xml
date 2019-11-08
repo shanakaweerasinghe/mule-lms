@@ -1,18 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 	<flow name="lms-libraryFlow-get" doc:id="d50f5a36-79de-4d94-8fa4-091d71ffb743" >
-		<logger level="INFO" doc:name="Logger" doc:id="8380c0f9-537a-4bce-b2bb-a0d242960197" />
-	</flow>
+		<logger level="INFO" doc:name="Logger" doc:id="8380c0f9-537a-4bce-b2bb-a0d242960197" message="#[attributes.queryParams.libraryId]"/>
+		<set-variable value="#[attributes.queryParams.libraryId]" doc:name="Set libraryId" doc:id="fdbf4518-73f3-4993-8a3b-105ee50d34bd" variableName="libraryId"/>
+		<choice doc:name="Choice" doc:id="39a9f917-0911-4ec9-ae87-28259ba55eb5" >
+			<when expression="#[isEmpty(vars.libraryId)]">
+				<http:request method="GET" doc:name="Request" doc:id="eb011dac-7758-4869-9ca8-04427344cc18" config-ref="HTTP_Request_configuration_library" path="library" />
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="f7de8538-5d04-4a9e-85d6-d1b5fc16d639" />
+				<http:request method="GET" doc:name="Request" doc:id="d4f57c3d-8da0-482b-b6af-b14ffa35f11f" config-ref="HTTP_Request_configuration_library" path="library/{libraryId}" >
+					<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	"libraryId" : vars.libraryId
+}]]]></http:uri-params>
+				</http:request>
+			</otherwise>
+		</choice>
+	
+</flow>
 	<flow name="lms-libraryFlow-post" doc:id="0409089d-5e33-4ae9-ac03-907742eb9932" >
 		<logger level="INFO" doc:name="Logger" doc:id="dafe76bf-1441-4950-af0c-d85aeeec44e3" />
-	</flow>
+		<http:request method="POST" doc:name="Request" doc:id="8ec9fcbc-aaba-4d7f-bb0b-0e54b6bf266e" config-ref="HTTP_Request_configuration_library" path="library"/>
+	
+</flow>
 	<flow name="lms-libraryFlow-patch" doc:id="3ca2d9c4-1d66-4b2e-bb3d-ed9adddd98b6">
 		<logger level="INFO" doc:name="Logger" doc:id="86d22798-e902-43ae-975d-40e40dd85064" />
-	</flow>
+		<set-variable value="#[attributes.queryParams.libraryId]" doc:name="Set libraryId" doc:id="0217aeaf-344c-4192-b5eb-f279be588a1f" variableName="libraryId"/>
+		<http:request method="PUT" doc:name="Request" doc:id="26272c88-eb29-4704-be00-9081a0e395c3" config-ref="HTTP_Request_configuration_library" path="library/{libraryId}">
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	"libraryId" : vars.libraryId
+}]]]></http:uri-params>
+		</http:request>
+	
+</flow>
 	<flow name="lms-libraryFlow-delete" doc:id="98cd20a0-4bba-4536-bd7d-f844ef8a1201">
 		<logger level="INFO" doc:name="Logger" doc:id="26b1afde-16a7-444c-a23a-9db92037b23d" />
+		<set-variable value="#[attributes.queryParams.libraryId]" doc:name="Set libraryId" doc:id="62abc1ce-ffed-4adc-bb09-010f81c48953" variableName="libraryId"/>
+		<http:request method="DELETE" doc:name="Request" doc:id="65d8cf3e-1329-47b2-82f0-15ca11f468cf" config-ref="HTTP_Request_configuration_library" path="library/{libraryId}">
+		<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	"libraryId" : vars.libraryId
+}]]]></http:uri-params>
+		</http:request>
 	</flow>
-	</mule>
+	<flow name="lms-libraryFlow-staff" doc:id="7d65b3d7-9b9d-4084-824b-e0f775590a00" >
+		<logger level="INFO" doc:name="Logger" doc:id="8ee5f3d0-ee94-473a-a917-d6779c6a8d9b" message="aaaaaaaaaaa"/>
+		<set-variable value="#[attributes.queryParams.libraryId]" doc:name="Set libraryId" doc:id="02a7b5ca-9981-4371-b03e-842c64e7c48d" variableName="libraryId"/>
+		<logger level="INFO" doc:name="Logger" doc:id="343d1690-6842-4104-9a8a-2b498434bf6e" message="#[vars.libraryId]"/>
+		<http:request method="GET" doc:name="Request" doc:id="22fef7df-e67a-43e2-b58d-1b8c37efbeaf" config-ref="HTTP_Request_configuration_library" path="library/{libraryId}/staff">
+		<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	"libraryId" : vars.libraryId
+}]]]></http:uri-params>
+		</http:request>
+	</flow>
+	<flow name="lms-libraryFlow-active" doc:id="5baa859e-49c6-4701-af11-90a774c8fac8" >
+		<logger level="INFO" doc:name="Logger" doc:id="c32f8e43-f2c3-4a23-83c5-8f6a31356049" message="aaaaaaaaaaa"/>
+		<http:request method="GET" doc:name="Request" doc:id="89ef3dfa-9a06-4914-b278-425809b18f0e" config-ref="HTTP_Request_configuration_library" path="activelibrary">
+		</http:request>
+	</flow>
+	
+</mule>

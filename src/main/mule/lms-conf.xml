@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
     <http:listener-config name="lms-httpListenerConfig">
         <http:listener-connection host="0.0.0.0" port="8092" />
     </http:listener-config>
@@ -13,11 +14,19 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<http:request-config name="HTTP_Request_configuration_member" doc:name="HTTP Request configuration" doc:id="1608ace0-d58b-4cb5-97e2-740b8f228a1f" basePath="/memberManagement" >
 		<http:request-connection host="${member.host}" port="${member.port}" />
 	</http:request-config>
-	<http:request-config name="HTTP_Request_configuration_staff" doc:name="HTTP Request configuration" doc:id="e12da335-3b9c-4445-a04d-74974ba54e7c" >
-		<http:request-connection host="${staff.host}" port="${staff.port}" />
+	<http:request-config name="HTTP_Request_configuration_staff" doc:name="HTTP Request configuration" doc:id="e12da335-3b9c-4445-a04d-74974ba54e7c" basePath="/staffmgt/Staffmember">
+		<http:request-connection host="${staff.host}" protocol="HTTPS">
+			<tls:context >
+				<tls:trust-store insecure="true" />
+			</tls:context>
+		</http:request-connection>
 	</http:request-config>
-	<http:request-config name="HTTP_Request_configuration_library" doc:name="HTTP Request configuration" doc:id="96b4b553-4f32-4c10-ac7f-e1825dedce36" >
-		<http:request-connection host="${library.host}" port="${library.port}" />
+	<http:request-config name="HTTP_Request_configuration_library" doc:name="HTTP Request configuration" doc:id="96b4b553-4f32-4c10-ac7f-e1825dedce36">
+		<http:request-connection host="${library.host}" protocol="HTTPS">
+			<tls:context >
+				<tls:trust-store insecure="true" />
+			</tls:context>
+		</http:request-connection>
 	</http:request-config>
     
 
