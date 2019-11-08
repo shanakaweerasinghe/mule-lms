@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="lms-bookFlow-get" doc:id="09726492-7033-4c30-803f-f0c1fd9cf456" >
+		<logger level="INFO" doc:name="Logger" doc:id="0311f789-2b10-46ee-a3f5-6021d2a24c91" message="#[attributes.queryParams.bookName]"/>
+		<choice doc:name="Choice" doc:id="4acc7fc8-0d09-4773-be4a-3c981b674c44" >
+			<when expression="#[isEmpty(attributes.queryParams.bookName)]">
+				<http:request method="GET" doc:name="Request" doc:id="3dd33ecb-9c35-4538-aed7-2e539952375f" config-ref="HTTP_Request_configuration_book" path="/bookList" />
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="f785b132-4ae6-4e31-97a4-83a18be98239" message="aaaaaaa"/>
+				<set-variable value="#[attributes.queryParams.bookName]" doc:name="Set Variable" doc:id="aedb7150-ea1a-480c-b550-2a379e5ab7dc" variableName="bookName"/>
+				<logger level="INFO" doc:name="Logger" doc:id="2fd3d8e9-f8db-4683-aec8-2d76e8d4a7de" message="#[vars.bookName]"/>
+				<http:request method="GET" doc:name="Request" doc:id="d78cc689-4456-4d15-91f5-7634ef214cc4" path="/bookList" config-ref="HTTP_Request_configuration_book"/>
+				<ee:transform doc:name="Transform Message" doc:id="e9fe7e51-d275-4355-9d98-d1baee7bbae8" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload filter ((value,index) -> (value.bookName contains vars.bookName))]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="lms-bookFlow-post" doc:id="08bd0c8b-0db8-4391-bd64-94c100388c7b" >
+		<logger level="INFO" doc:name="Logger" doc:id="e9d65851-8acd-4346-a71e-4015fbb38e00" />
+		<http:request method="POST" doc:name="Request" doc:id="9cddb4a2-95ca-4141-b99c-4b36968d5f6c" config-ref="HTTP_Request_configuration_book" path="/insertBook"/>
+		<ee:transform doc:name="Transform Message" doc:id="94a187fa-454c-4153-8854-9775235cb73a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully inserted"
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+	</flow>
+	<flow name="lms-bookFlow-patch" doc:id="089bb62c-4874-4f0a-91bb-da8bba2faa60">
+		<logger level="INFO" doc:name="Logger" doc:id="be933523-2abd-471f-a414-8a80a49028a3" />
+		<http:request method="PUT" doc:name="Request" doc:id="a4d10e37-0cbf-4b5c-8b31-4bd18e56f41b" path="/updateBook" config-ref="HTTP_Request_configuration_book"/>
+		<ee:transform doc:name="Transform Message" doc:id="9428d7fa-1fcf-42e0-8674-aa2c4177da8c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully updated"
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+	</flow>
+	<flow name="lms-bookFlow-delete" doc:id="38e11415-a0f2-4c59-8b67-30a3c38ddfec">
+		<ee:transform doc:name="Transform Message" doc:id="f4a98492-826c-4047-a4be-fc0d2ddae2fb" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+     "bookId": attributes.queryParams.bookId
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="9a556498-2e43-4806-9139-74ab7ca592a7" message="#[payload]"/>
+		<http:request method="DELETE" doc:name="Request" doc:id="961a2879-177f-417c-a0d0-1decd7982613" config-ref="HTTP_Request_configuration_book" path="/deleteBook"/>
+		<ee:transform doc:name="Transform Message" doc:id="d5d5f816-c380-4d49-889c-114b54e14fc9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully deleted"
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+	</flow>
+</mule>

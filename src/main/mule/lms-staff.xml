@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<flow name="lms-staffFlow-get" doc:id="aff555d7-9b38-4847-a18d-95749e1ed63f" >
+		<logger level="INFO" doc:name="Logger" doc:id="fa127b53-3f50-41e9-a5d6-a18b399783ac" />
+	</flow>
+	<flow name="lms-staffFlow-post" doc:id="36c85d06-c0dc-45b3-af0e-609d99d0b0a1" >
+		<logger level="INFO" doc:name="Logger" doc:id="d6173f84-198d-4a47-b15e-6681145290bb" />
+	</flow>
+	<flow name="lms-staffFlow-patch" doc:id="32eeb2b6-5356-4e11-a3b1-0dbd3ffef7c6">
+		<logger level="INFO" doc:name="Logger" doc:id="fe201cff-6c31-493a-8dce-bc7deb6e19cd" />
+	</flow>
+	<flow name="lms-staffFlow-delete" doc:id="820f6596-4564-43bb-8ecd-4b363155931a">
+		<logger level="INFO" doc:name="Logger" doc:id="d49ee4fd-9b57-47a1-891d-7ad2225b11d5" />
+	</flow>
+	</mule>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="lms-memberFlow-get" doc:id="e1e0ffc8-5eda-423f-ab82-f0b20e28450f" >
+		<logger level="INFO" doc:name="Logger" doc:id="755fe96c-3b2e-4f6c-a2ca-7ee815707d60" />
+		<choice doc:name="Choice" doc:id="8609e778-040f-45a5-b26b-56e3abffb006" >
+			<when expression="#[isEmpty(attributes.queryParams.bookName)]">
+				<http:request method="GET" doc:name="Request" doc:id="03c09c25-235e-4e2e-8926-1d200b0e2696" path="/memberList" config-ref="HTTP_Request_configuration_member"/>
+			</when>
+			<otherwise >
+				<http:request method="GET" doc:name="Request" doc:id="e3d34eb3-a960-4a88-95c4-2377e83149b7" config-ref="HTTP_Request_configuration_member" path="/memberList"/>
+			</otherwise>
+		</choice>
+	
+</flow>
+	<flow name="lms-memberFlow-post" doc:id="b657c7eb-8c39-4a1e-b56e-e8c67ddcd49e" >
+		<logger level="INFO" doc:name="Logger" doc:id="31110161-36a5-4c56-b0c2-96f0ea72b008" />
+		<http:request method="POST" doc:name="Request" doc:id="d7b182bf-cfca-4b33-8f86-005f58fc8f94" config-ref="HTTP_Request_configuration_member" path="/insertMember"/>
+		<ee:transform doc:name="Transform Message" doc:id="657a4607-841a-4ce1-8334-1e87ca002958" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully inserted"
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+	
+</flow>
+	<flow name="lms-memberFlow-patch" doc:id="b0ee0e12-eda8-4aea-9fcf-d4484cd87fb6">
+		<logger level="INFO" doc:name="Logger" doc:id="12d660d8-4539-40d4-96ab-7623ede59722" />
+		<http:request method="PUT" doc:name="Request" doc:id="91e49e7d-c3d4-457d-84c4-c29092cf6dbe" config-ref="HTTP_Request_configuration_member" path="/updateMember"/>
+		<ee:transform doc:name="Transform Message" doc:id="e6105337-8ec6-4047-9e2b-dcb920667b88" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully updated"
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+	
+</flow>
+	<flow name="lms-memberFlow-delete" doc:id="fef7f278-b16f-49cb-b200-101c0be83032">
+		<logger level="INFO" doc:name="Logger" doc:id="6e9c5b42-ba07-498a-abf1-afcfd692e906" />
+		<ee:transform doc:name="Transform Message" doc:id="251a576c-05b3-42f5-9e2f-73d7eb92b453" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+        "memberId": attributes.queryParams.menberId
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<http:request method="DELETE" doc:name="Request" doc:id="7594a20a-0dee-485f-9c5c-0bbe76224bc2" config-ref="HTTP_Request_configuration_member" path="/deleteMember"/>
+		<ee:transform doc:name="Transform Message" doc:id="984338bc-8aea-4bee-9358-3d115bda129f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status : "success",
+	details: "successfully deleted"
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+	
+</flow>
+	</mule>

@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-    <http:listener-config name="lms-httpListenerConfig">
-        <http:listener-connection host="0.0.0.0" port="8092" />
-    </http:listener-config>
-    <apikit:config name="lms-config" api="lms.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    
     <flow name="lms-main">
         <http:listener config-ref="lms-httpListenerConfig" path="/api/1.0/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -146,6 +143,7 @@ output application/json
 			</when>
 			<otherwise >
 				<logger level="INFO" doc:name="Logger" doc:id="82c2acad-7540-4666-a656-b14cc2fd7024" message="original flow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="4864a03b-bed9-483c-81ee-6459fcdcafe9" name="lms-bookFlow-delete"/>
 			</otherwise>
 		</choice>
     </flow>
@@ -218,6 +216,7 @@ output application/json
 			</when>
 			<otherwise >
 				<logger level="INFO" doc:name="Logger" doc:id="f3298123-59db-41ef-b3d0-a03715c1b933" message="original flow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="355b59f9-5541-4e23-a470-19d72098eef0" name="lms-memberFlow-delete"/>
 			</otherwise>
 		</choice>
     </flow>
@@ -242,6 +241,7 @@ output application/json
 			</when>
 			<otherwise >
 				<logger level="INFO" doc:name="Logger" doc:id="83cc049f-212e-4972-a294-304fcf8285c4" message="original flow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="00bf11d9-825b-4602-bd5d-89010cdaa97f" name="lms-bookFlow-patch"/>
 			</otherwise>
 		</choice>
     </flow>
@@ -314,6 +314,7 @@ output application/json
 			</when>
 			<otherwise >
 				<logger level="INFO" doc:name="Logger" doc:id="31596798-d6a1-4346-9a46-2419e84ce4d7" message="original flow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="2c84f7c4-1559-4838-9e0c-86b114b0d858" name="lms-memberFlow-patch"/>
 			</otherwise>
 		</choice>
     </flow>
@@ -402,6 +403,7 @@ output application/json
 			</when>
 			<otherwise >
 				<logger level="INFO" doc:name="Logger" doc:id="f5748192-0d29-46fa-8926-c689dd04c7b7" message="original flow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="5a6de12f-29e3-43ac-a1c4-405a02f9fefa" name="lms-bookFlow-get"/>
 			</otherwise>
 		</choice>
     </flow>
@@ -527,6 +529,7 @@ output application/json
 			</when>
 			<otherwise >
 				<logger level="INFO" doc:name="Logger" doc:id="326a0fcf-d378-4b8a-883a-6767114337be" message="original flow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="e3e21291-fb48-4214-9cf3-ec0f5f5aafcb" name="lms-memberFlow-get"/>
 			</otherwise>
 		</choice>
     </flow>
@@ -551,6 +554,7 @@ output application/json
 			</when>
 			<otherwise >
 				<logger level="INFO" doc:name="Logger" doc:id="846ecbd1-a72a-4866-b966-9f939e7d10f5" message="original flow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="0de964d3-0f92-45b9-9895-227ea43b06b0" name="lms-bookFlow-post"/>
 			</otherwise>
 		</choice>
     </flow>
@@ -647,6 +651,7 @@ output application/json
 			</when>
 			<otherwise >
 				<logger level="INFO" doc:name="Logger" doc:id="37626c9d-420d-46d4-b9e5-6b3281f112cd" message="original flow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="b635342e-580b-4336-b9f2-64e34f0f0b94" name="lms-memberFlow-post"/>
 			</otherwise>
 		</choice>
     </flow>

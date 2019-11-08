@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+    <http:listener-config name="lms-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8092" />
+    </http:listener-config>
+    <apikit:config name="lms-config" api="lms.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+	<http:request-config name="HTTP_Request_configuration_book" doc:name="HTTP Request configuration" doc:id="931f7615-6b00-47d0-9105-b5485de888af" basePath="/booksManagement" >
+		<http:request-connection host="${books.host}" port="${books.port}" />
+	</http:request-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="9e14b38d-b9b8-498e-9cd2-5ba0cd73a9dd" file="application.properties" />
+	<http:request-config name="HTTP_Request_configuration_member" doc:name="HTTP Request configuration" doc:id="1608ace0-d58b-4cb5-97e2-740b8f228a1f" basePath="/memberManagement" >
+		<http:request-connection host="${member.host}" port="${member.port}" />
+	</http:request-config>
+    
+
+</mule>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<flow name="lms-libraryFlow-get" doc:id="d50f5a36-79de-4d94-8fa4-091d71ffb743" >
+		<logger level="INFO" doc:name="Logger" doc:id="8380c0f9-537a-4bce-b2bb-a0d242960197" />
+	</flow>
+	<flow name="lms-libraryFlow-post" doc:id="0409089d-5e33-4ae9-ac03-907742eb9932" >
+		<logger level="INFO" doc:name="Logger" doc:id="dafe76bf-1441-4950-af0c-d85aeeec44e3" />
+	</flow>
+	<flow name="lms-libraryFlow-patch" doc:id="3ca2d9c4-1d66-4b2e-bb3d-ed9adddd98b6">
+		<logger level="INFO" doc:name="Logger" doc:id="86d22798-e902-43ae-975d-40e40dd85064" />
+	</flow>
+	<flow name="lms-libraryFlow-delete" doc:id="98cd20a0-4bba-4536-bd7d-f844ef8a1201">
+		<logger level="INFO" doc:name="Logger" doc:id="26b1afde-16a7-444c-a23a-9db92037b23d" />
+	</flow>
+	</mule>
